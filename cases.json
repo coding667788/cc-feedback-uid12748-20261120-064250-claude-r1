@@ -1,0 +1,140 @@
+{
+  "meta": {
+    "name": "federated-login-simulator synthetic cases",
+    "version": 1,
+    "description": "Fully synthetic, offline, deterministic scenario. All times are logical integers supplied per operation; all subjects/providers/clients are invented. Covers the happy path, cross-tenant/cross-provider subject independence, claim/challenge mismatch, nonce reuse across clients, exact-expiry boundaries, replay, idempotent receipts, revocation, scope shrink, device reset, failure atomicity and every error code."
+  },
+  "setup": {
+    "tenants": [
+      {"tenant_id": "t1"},
+      {"tenant_id": "t2"}
+    ],
+    "providers": [
+      {"provider_id": "p1", "tenant_id": "t1", "issuer": "https://idp-alpha.example"},
+      {"provider_id": "p2", "tenant_id": "t1", "issuer": "https://idp-beta.example"},
+      {"provider_id": "p3", "tenant_id": "t2", "issuer": "https://idp-alpha.example"},
+      {"provider_id": "p4", "tenant_id": "t1", "issuer": "https://idp-gamma.example"}
+    ],
+    "clients": [
+      {"client_id": "c1", "tenant_id": "t1",
+       "callbacks": ["https://app1.example/cb"],
+       "scopes": ["read", "write", "admin"]},
+      {"client_id": "c2", "tenant_id": "t1",
+       "callbacks": ["https://app2.example/cb", "https://app2.example/cb2"],
+       "scopes": ["read"]},
+      {"client_id": "c3", "tenant_id": "t2",
+       "callbacks": ["https://app3.example/cb"],
+       "scopes": ["read", "write"]}
+    ],
+    "devices": [
+      {"device_id": "d1", "tenant_id": "t1", "generation": 5},
+      {"device_id": "d2", "tenant_id": "t1", "generation": 2},
+      {"device_id": "d3", "tenant_id": "t2", "generation": 1}
+    ]
+  },
+  "operations": [
+    {"request_id": "ch-1", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read", "write"], "verifier": "verifier-alpha", "nonce": "N-001", "expires_at": 2000},
+    {"request_id": "cb-1", "op": "callback", "now": 1100, "challenge_id": "CH-ch-1", "claim": {"claim_id": "CL-0001", "challenge_id": "CH-ch-1", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "alice", "iat": 1050, "exp": 1900}},
+    {"request_id": "rd-1", "op": "redeem", "now": 1200, "credential_id": "CR-cb-1", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "verifier-alpha", "scopes": ["write", "read"]},
+    {"request_id": "rd-1", "op": "redeem", "now": 1201, "credential_id": "CR-cb-1", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "verifier-alpha", "scopes": ["write", "read"]},
+
+    {"request_id": "ch-2", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p2", "client_id": "c2", "device_id": "d2", "callback": "https://app2.example/cb", "scopes": ["read"], "verifier": "v-beta", "nonce": "N-001", "expires_at": 2000},
+    {"request_id": "cb-2", "op": "callback", "now": 1100, "challenge_id": "CH-ch-2", "claim": {"claim_id": "CL-0002", "challenge_id": "CH-ch-2", "iss": "https://idp-beta.example", "aud": "c2", "sub": "alice", "iat": 1050, "exp": 1900}},
+    {"request_id": "rd-2", "op": "redeem", "now": 1200, "credential_id": "CR-cb-2", "callback": "https://app2.example/cb", "client_id": "c2", "verifier": "v-beta", "scopes": ["read"]},
+
+    {"request_id": "ch-3", "op": "challenge", "now": 1000, "tenant_id": "t2", "provider_id": "p3", "client_id": "c3", "device_id": "d3", "callback": "https://app3.example/cb", "scopes": ["read"], "verifier": "v-gamma", "nonce": "N-001", "expires_at": 2000},
+    {"request_id": "cb-3", "op": "callback", "now": 1100, "challenge_id": "CH-ch-3", "claim": {"claim_id": "CL-0003", "challenge_id": "CH-ch-3", "iss": "https://idp-alpha.example", "aud": "c3", "sub": "alice", "iat": 1050, "exp": 1900}},
+    {"request_id": "rd-3", "op": "redeem", "now": 1200, "credential_id": "CR-cb-3", "callback": "https://app3.example/cb", "client_id": "c3", "verifier": "v-gamma", "scopes": ["read"]},
+
+    {"request_id": "ch-4", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v4", "nonce": "N-004", "expires_at": 2000},
+    {"request_id": "cb-4", "op": "callback", "now": 1100, "challenge_id": "CH-ch-4", "claim": {"claim_id": "CL-0004", "challenge_id": "CH-ch-4", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "alice", "iat": 1050, "exp": 1900}},
+    {"request_id": "revoke-subject-1", "op": "revoke_subject", "now": 1300, "tenant_id": "t1", "provider_id": "p1", "sub": "alice"},
+    {"request_id": "rd-4", "op": "redeem", "now": 1310, "credential_id": "CR-cb-4", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "v4", "scopes": ["read"]},
+    {"request_id": "rd-4-retry", "op": "redeem", "now": 1320, "credential_id": "CR-cb-4", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "v4", "scopes": ["read"]},
+
+    {"request_id": "ch-5", "op": "challenge", "now": 1310, "tenant_id": "t1", "provider_id": "p2", "client_id": "c2", "device_id": "d2", "callback": "https://app2.example/cb", "scopes": ["read"], "verifier": "v5", "nonce": "N-005", "expires_at": 2000},
+    {"request_id": "cb-5", "op": "callback", "now": 1320, "challenge_id": "CH-ch-5", "claim": {"claim_id": "CL-0005", "challenge_id": "CH-ch-5", "iss": "https://idp-beta.example", "aud": "c2", "sub": "alice", "iat": 1315, "exp": 1900}},
+    {"request_id": "rd-5", "op": "redeem", "now": 1330, "credential_id": "CR-cb-5", "callback": "https://app2.example/cb", "client_id": "c2", "verifier": "v5", "scopes": ["read"]},
+
+    {"request_id": "ch-6", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v6", "nonce": "N-006", "expires_at": 2000},
+    {"request_id": "cb-6", "op": "callback", "now": 1100, "challenge_id": "CH-ch-6", "claim": {"claim_id": "CL-0006", "challenge_id": "CH-ch-1", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "mallory", "iat": 1050, "exp": 1900}},
+
+    {"request_id": "ch-7", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v7", "nonce": "N-001", "expires_at": 2000},
+
+    {"request_id": "ch-8", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v8", "nonce": "N-008", "expires_at": 2000},
+    {"request_id": "cb-8", "op": "callback", "now": 2000, "challenge_id": "CH-ch-8", "claim": {"claim_id": "CL-0008", "challenge_id": "CH-ch-8", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "henry", "iat": 1050, "exp": 2500}},
+
+    {"request_id": "ch-9", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v9", "nonce": "N-009", "expires_at": 3000},
+    {"request_id": "cb-9", "op": "callback", "now": 1500, "challenge_id": "CH-ch-9", "claim": {"claim_id": "CL-0009", "challenge_id": "CH-ch-9", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "ivy", "iat": 1400, "exp": 1500}},
+
+    {"request_id": "ch-10", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v10", "nonce": "N-010", "expires_at": 2000},
+    {"request_id": "cb-10", "op": "callback", "now": 1100, "challenge_id": "CH-ch-10", "claim": {"claim_id": "CL-0010", "challenge_id": "CH-ch-10", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "jack", "iat": 1050, "exp": 2500}},
+    {"request_id": "rd-10", "op": "redeem", "now": 2000, "credential_id": "CR-cb-10", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "v10", "scopes": ["read"]},
+
+    {"request_id": "ch-11", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read", "write"], "verifier": "v11", "nonce": "N-011", "expires_at": 2000},
+    {"request_id": "cb-11", "op": "callback", "now": 1100, "challenge_id": "CH-ch-11", "claim": {"claim_id": "CL-0011", "challenge_id": "CH-ch-11", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "kate", "iat": 1050, "exp": 1900}},
+    {"request_id": "rd-11-bad", "op": "redeem", "now": 1200, "credential_id": "CR-cb-11", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "wrong-verifier", "scopes": ["read", "write"]},
+    {"request_id": "rd-11", "op": "redeem", "now": 1210, "credential_id": "CR-cb-11", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "v11", "scopes": ["write", "read"]},
+
+    {"request_id": "cb-1-replay", "op": "callback", "now": 1150, "challenge_id": "CH-ch-1", "claim": {"claim_id": "CL-0001", "challenge_id": "CH-ch-1", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "alice", "iat": 1050, "exp": 1900}},
+
+    {"request_id": "ch-12", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p2", "client_id": "c2", "device_id": "d2", "callback": "https://app2.example/cb", "scopes": ["read"], "verifier": "v12", "nonce": "N-012", "expires_at": 2000},
+    {"request_id": "cb-12", "op": "callback", "now": 1100, "challenge_id": "CH-ch-12", "claim": {"claim_id": "CL-0012", "challenge_id": "CH-ch-12", "iss": "https://idp-beta.example", "aud": "c2", "sub": "bob", "iat": 1050, "exp": 1900}},
+    {"request_id": "reset-d2", "op": "reset_device", "now": 1400, "device_id": "d2"},
+    {"request_id": "rd-12", "op": "redeem", "now": 1410, "credential_id": "CR-cb-12", "callback": "https://app2.example/cb", "client_id": "c2", "verifier": "v12", "scopes": ["read"]},
+
+    {"request_id": "ch-13", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read", "write"], "verifier": "v13", "nonce": "N-013", "expires_at": 2000},
+    {"request_id": "cb-13", "op": "callback", "now": 1100, "challenge_id": "CH-ch-13", "claim": {"claim_id": "CL-0013", "challenge_id": "CH-ch-13", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "carol", "iat": 1050, "exp": 1900}},
+    {"request_id": "ch-14", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v14", "nonce": "N-014", "expires_at": 2000},
+    {"request_id": "cb-14", "op": "callback", "now": 1120, "challenge_id": "CH-ch-14", "claim": {"claim_id": "CL-0014", "challenge_id": "CH-ch-14", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "carol", "iat": 1050, "exp": 1900}},
+
+    {"request_id": "ch-23", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["admin"], "verifier": "v23", "nonce": "N-023", "expires_at": 2000},
+    {"request_id": "cb-23", "op": "callback", "now": 1100, "challenge_id": "CH-ch-23", "claim": {"claim_id": "CL-0023", "challenge_id": "CH-ch-23", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "grace", "iat": 1050, "exp": 1900}},
+    {"request_id": "rd-23", "op": "redeem", "now": 1400, "credential_id": "CR-cb-23", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "v23", "scopes": ["admin"]},
+
+    {"request_id": "shrink-c1", "op": "shrink_client_scopes", "now": 1500, "client_id": "c1", "scopes": ["read"]},
+    {"request_id": "rd-13", "op": "redeem", "now": 1510, "credential_id": "CR-cb-13", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "v13", "scopes": ["read", "write"]},
+    {"request_id": "rd-14", "op": "redeem", "now": 1520, "credential_id": "CR-cb-14", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "v14", "scopes": ["read"]},
+
+    {"request_id": "ch-15", "op": "challenge", "now": 1450, "tenant_id": "t1", "provider_id": "p4", "client_id": "c2", "device_id": "d2", "callback": "https://app2.example/cb2", "scopes": ["read"], "verifier": "v15", "nonce": "N-015", "expires_at": 2500},
+    {"request_id": "cb-15", "op": "callback", "now": 1500, "challenge_id": "CH-ch-15", "claim": {"claim_id": "CL-0015", "challenge_id": "CH-ch-15", "iss": "https://idp-gamma.example", "aud": "c2", "sub": "dave", "iat": 1460, "exp": 2400}},
+    {"request_id": "revoke-p4", "op": "revoke_provider", "now": 1600, "provider_id": "p4"},
+    {"request_id": "rd-15", "op": "redeem", "now": 1610, "credential_id": "CR-cb-15", "callback": "https://app2.example/cb2", "client_id": "c2", "verifier": "v15", "scopes": ["read"]},
+    {"request_id": "ch-16", "op": "challenge", "now": 1620, "tenant_id": "t1", "provider_id": "p4", "client_id": "c2", "device_id": "d2", "callback": "https://app2.example/cb", "scopes": ["read"], "verifier": "v16", "nonce": "N-016", "expires_at": 2500},
+
+    {"request_id": "ch-17", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p2", "client_id": "c2", "device_id": "d2", "callback": "https://app2.example/cb", "scopes": ["read"], "verifier": "v17", "nonce": "N-017", "expires_at": 2000},
+    {"request_id": "cb-17", "op": "callback", "now": 1100, "challenge_id": "CH-ch-17", "claim": {"claim_id": "CL-0017", "challenge_id": "CH-ch-17", "iss": "https://idp-beta.example", "aud": "c2", "sub": "erin", "iat": 1050, "exp": 1900}},
+    {"request_id": "revoke-c2", "op": "revoke_client", "now": 1700, "client_id": "c2"},
+    {"request_id": "rd-17", "op": "redeem", "now": 1710, "credential_id": "CR-cb-17", "callback": "https://app2.example/cb", "client_id": "c2", "verifier": "v17", "scopes": ["read"]},
+    {"request_id": "ch-18", "op": "challenge", "now": 1720, "tenant_id": "t1", "provider_id": "p2", "client_id": "c2", "device_id": "d2", "callback": "https://app2.example/cb", "scopes": ["read"], "verifier": "v18", "nonce": "N-018", "expires_at": 2500},
+
+    {"request_id": "ch-19", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb/", "scopes": ["read"], "verifier": "v19", "nonce": "N-019", "expires_at": 2000},
+    {"request_id": "ch-20", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read", "delete"], "verifier": "v20", "nonce": "N-020", "expires_at": 2000},
+    {"request_id": "ch-21", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v21", "nonce": "N-021", "expires_at": 900},
+
+    {"request_id": "ch-22", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v22", "nonce": "N-022", "expires_at": 2000},
+    {"request_id": "cb-22", "op": "callback", "now": 1100, "challenge_id": "CH-ch-22", "claim": {"claim_id": "CL-0022", "challenge_id": "CH-ch-22", "iss": "https://idp-evil.example", "aud": "c1", "sub": "frank", "iat": 1050, "exp": 1900}},
+    {"request_id": "cb-22b", "op": "callback", "now": 1100, "challenge_id": "CH-ch-22", "claim": {"claim_id": "CL-0022B", "challenge_id": "CH-ch-22", "iss": "https://idp-alpha.example", "aud": "c2", "sub": "frank", "iat": 1050, "exp": 1900}},
+    {"request_id": "cb-22c", "op": "callback", "now": 1100, "challenge_id": "CH-ch-22", "claim": {"claim_id": "CL-0022C", "challenge_id": "CH-ch-22", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "", "iat": 1050, "exp": 1900}},
+    {"request_id": "cb-22d", "op": "callback", "now": 1110, "challenge_id": "CH-ch-22", "claim": {"claim_id": "CL-0022D", "challenge_id": "CH-ch-22", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "frank", "iat": 1050, "exp": 1900}},
+    {"request_id": "rd-22-badscopes", "op": "redeem", "now": 1200, "credential_id": "CR-cb-22d", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "v22", "scopes": ["read", "write"]},
+    {"request_id": "rd-22-badcb", "op": "redeem", "now": 1200, "credential_id": "CR-cb-22d", "callback": "https://app1.example/other", "client_id": "c1", "verifier": "v22", "scopes": ["read"]},
+    {"request_id": "rd-22-badclient", "op": "redeem", "now": 1200, "credential_id": "CR-cb-22d", "callback": "https://app1.example/cb", "client_id": "c2", "verifier": "v22", "scopes": ["read"]},
+    {"request_id": "rd-22", "op": "redeem", "now": 1210, "credential_id": "CR-cb-22d", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "v22", "scopes": ["read"]},
+
+    {"request_id": "rd-unknown", "op": "redeem", "now": 1200, "credential_id": "CR-nonexistent", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "x", "scopes": ["read"]},
+    {"request_id": "rd-1-double", "op": "redeem", "now": 1220, "credential_id": "CR-cb-1", "callback": "https://app1.example/cb", "client_id": "c1", "verifier": "verifier-alpha", "scopes": ["read", "write"]},
+
+    {"request_id": "ch-badtenant", "op": "challenge", "now": 1000, "tenant_id": "t9", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "vx", "nonce": "N-X1", "expires_at": 2000},
+    {"request_id": "ch-badprovider", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p9", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "vx", "nonce": "N-X2", "expires_at": 2000},
+    {"request_id": "ch-badclient", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c9", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "vx", "nonce": "N-X3", "expires_at": 2000},
+    {"request_id": "ch-baddevice", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d9", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "vx", "nonce": "N-X4", "expires_at": 2000},
+    {"request_id": "cb-badchallenge", "op": "callback", "now": 1100, "challenge_id": "CH-nope", "claim": {"claim_id": "CL-0099", "challenge_id": "CH-nope", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "zoe", "iat": 1050, "exp": 1900}},
+
+    {"request_id": "ch-24", "op": "challenge", "now": 1330, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v24", "nonce": "N-024", "expires_at": 2000},
+    {"request_id": "cb-24", "op": "callback", "now": 1340, "challenge_id": "CH-ch-24", "claim": {"claim_id": "CL-0024", "challenge_id": "CH-ch-24", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "alice", "iat": 1335, "exp": 1900}},
+
+    {"request_id": "ch-25", "op": "challenge", "now": 1000, "tenant_id": "t1", "provider_id": "p1", "client_id": "c1", "device_id": "d1", "callback": "https://app1.example/cb", "scopes": ["read"], "verifier": "v25", "nonce": "N-025", "expires_at": 2000},
+    {"request_id": "cb-25", "op": "callback", "now": 1500, "challenge_id": "CH-ch-25", "claim": {"claim_id": "CL-0025", "challenge_id": "CH-ch-25", "iss": "https://idp-alpha.example", "aud": "c1", "sub": "leo", "iat": 1600, "exp": 2500}}
+  ]
+}

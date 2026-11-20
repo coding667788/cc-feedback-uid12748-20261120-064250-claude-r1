@@ -1,0 +1,562 @@
+{
+  "results": [
+    {
+      "challenge_id": "CH-ch-1",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-1",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-1",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-1",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "op": "redeem",
+      "request_id": "rd-1",
+      "session_id": "SE-rd-1",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "op": "redeem",
+      "replayed": true,
+      "request_id": "rd-1",
+      "session_id": "SE-rd-1",
+      "status": "ok"
+    },
+    {
+      "challenge_id": "CH-ch-2",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-2",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-2",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-2",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "op": "redeem",
+      "request_id": "rd-2",
+      "session_id": "SE-rd-2",
+      "status": "ok"
+    },
+    {
+      "challenge_id": "CH-ch-3",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-3",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-3",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-3",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "op": "redeem",
+      "request_id": "rd-3",
+      "session_id": "SE-rd-3",
+      "status": "ok"
+    },
+    {
+      "challenge_id": "CH-ch-4",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-4",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-4",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-4",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "invalidated": 1,
+      "op": "revoke_subject",
+      "request_id": "revoke-subject-1",
+      "status": "ok"
+    },
+    {
+      "error": "E_CREDENTIAL_INVALID",
+      "op": "redeem",
+      "request_id": "rd-4",
+      "status": "error"
+    },
+    {
+      "error": "E_CREDENTIAL_INVALID",
+      "op": "redeem",
+      "request_id": "rd-4-retry",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-5",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-5",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-5",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-5",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "op": "redeem",
+      "request_id": "rd-5",
+      "session_id": "SE-rd-5",
+      "status": "ok"
+    },
+    {
+      "challenge_id": "CH-ch-6",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-6",
+      "status": "ok"
+    },
+    {
+      "error": "E_CHALLENGE_MISMATCH",
+      "op": "callback",
+      "request_id": "cb-6",
+      "status": "error"
+    },
+    {
+      "error": "E_NONCE_REUSED",
+      "op": "challenge",
+      "request_id": "ch-7",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-8",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-8",
+      "status": "ok"
+    },
+    {
+      "error": "E_CHALLENGE_EXPIRED",
+      "op": "callback",
+      "request_id": "cb-8",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-9",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-9",
+      "status": "ok"
+    },
+    {
+      "error": "E_CLAIM_TIME",
+      "op": "callback",
+      "request_id": "cb-9",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-10",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-10",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-10",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-10",
+      "status": "ok"
+    },
+    {
+      "error": "E_CHALLENGE_EXPIRED",
+      "op": "redeem",
+      "request_id": "rd-10",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-11",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-11",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-11",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-11",
+      "status": "ok"
+    },
+    {
+      "error": "E_VERIFIER_MISMATCH",
+      "op": "redeem",
+      "request_id": "rd-11-bad",
+      "status": "error"
+    },
+    {
+      "error": null,
+      "op": "redeem",
+      "request_id": "rd-11",
+      "session_id": "SE-rd-11",
+      "status": "ok"
+    },
+    {
+      "error": "E_CLAIM_REPLAYED",
+      "op": "callback",
+      "request_id": "cb-1-replay",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-12",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-12",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-12",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-12",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "generation": 3,
+      "invalidated": 1,
+      "op": "reset_device",
+      "request_id": "reset-d2",
+      "status": "ok"
+    },
+    {
+      "error": "E_CREDENTIAL_INVALID",
+      "op": "redeem",
+      "request_id": "rd-12",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-13",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-13",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-13",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-13",
+      "status": "ok"
+    },
+    {
+      "challenge_id": "CH-ch-14",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-14",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-14",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-14",
+      "status": "ok"
+    },
+    {
+      "challenge_id": "CH-ch-23",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-23",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-23",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-23",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "op": "redeem",
+      "request_id": "rd-23",
+      "session_id": "SE-rd-23",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "invalidated": 1,
+      "op": "shrink_client_scopes",
+      "request_id": "shrink-c1",
+      "status": "ok"
+    },
+    {
+      "error": "E_CREDENTIAL_INVALID",
+      "op": "redeem",
+      "request_id": "rd-13",
+      "status": "error"
+    },
+    {
+      "error": null,
+      "op": "redeem",
+      "request_id": "rd-14",
+      "session_id": "SE-rd-14",
+      "status": "ok"
+    },
+    {
+      "challenge_id": "CH-ch-15",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-15",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-15",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-15",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "invalidated": 1,
+      "op": "revoke_provider",
+      "request_id": "revoke-p4",
+      "status": "ok"
+    },
+    {
+      "error": "E_CREDENTIAL_INVALID",
+      "op": "redeem",
+      "request_id": "rd-15",
+      "status": "error"
+    },
+    {
+      "error": "E_PROVIDER_REVOKED",
+      "op": "challenge",
+      "request_id": "ch-16",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-17",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-17",
+      "status": "ok"
+    },
+    {
+      "credential_id": "CR-cb-17",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-17",
+      "status": "ok"
+    },
+    {
+      "error": null,
+      "invalidated": 1,
+      "op": "revoke_client",
+      "request_id": "revoke-c2",
+      "status": "ok"
+    },
+    {
+      "error": "E_CREDENTIAL_INVALID",
+      "op": "redeem",
+      "request_id": "rd-17",
+      "status": "error"
+    },
+    {
+      "error": "E_CLIENT_REVOKED",
+      "op": "challenge",
+      "request_id": "ch-18",
+      "status": "error"
+    },
+    {
+      "error": "E_CALLBACK_NOT_REGISTERED",
+      "op": "challenge",
+      "request_id": "ch-19",
+      "status": "error"
+    },
+    {
+      "error": "E_SCOPE_NOT_GRANTED",
+      "op": "challenge",
+      "request_id": "ch-20",
+      "status": "error"
+    },
+    {
+      "error": "E_EXPIRY_PAST",
+      "op": "challenge",
+      "request_id": "ch-21",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-22",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-22",
+      "status": "ok"
+    },
+    {
+      "error": "E_ISSUER_MISMATCH",
+      "op": "callback",
+      "request_id": "cb-22",
+      "status": "error"
+    },
+    {
+      "error": "E_AUDIENCE_MISMATCH",
+      "op": "callback",
+      "request_id": "cb-22b",
+      "status": "error"
+    },
+    {
+      "error": "E_SUBJECT_INVALID",
+      "op": "callback",
+      "request_id": "cb-22c",
+      "status": "error"
+    },
+    {
+      "credential_id": "CR-cb-22d",
+      "error": null,
+      "op": "callback",
+      "request_id": "cb-22d",
+      "status": "ok"
+    },
+    {
+      "error": "E_SCOPE_MISMATCH",
+      "op": "redeem",
+      "request_id": "rd-22-badscopes",
+      "status": "error"
+    },
+    {
+      "error": "E_CALLBACK_MISMATCH",
+      "op": "redeem",
+      "request_id": "rd-22-badcb",
+      "status": "error"
+    },
+    {
+      "error": "E_CLIENT_MISMATCH",
+      "op": "redeem",
+      "request_id": "rd-22-badclient",
+      "status": "error"
+    },
+    {
+      "error": null,
+      "op": "redeem",
+      "request_id": "rd-22",
+      "session_id": "SE-rd-22",
+      "status": "ok"
+    },
+    {
+      "error": "E_CREDENTIAL_UNKNOWN",
+      "op": "redeem",
+      "request_id": "rd-unknown",
+      "status": "error"
+    },
+    {
+      "error": "E_CREDENTIAL_CONSUMED",
+      "op": "redeem",
+      "request_id": "rd-1-double",
+      "status": "error"
+    },
+    {
+      "error": "E_TENANT_UNKNOWN",
+      "op": "challenge",
+      "request_id": "ch-badtenant",
+      "status": "error"
+    },
+    {
+      "error": "E_PROVIDER_UNKNOWN",
+      "op": "challenge",
+      "request_id": "ch-badprovider",
+      "status": "error"
+    },
+    {
+      "error": "E_CLIENT_UNKNOWN",
+      "op": "challenge",
+      "request_id": "ch-badclient",
+      "status": "error"
+    },
+    {
+      "error": "E_DEVICE_UNKNOWN",
+      "op": "challenge",
+      "request_id": "ch-baddevice",
+      "status": "error"
+    },
+    {
+      "error": "E_CHALLENGE_UNKNOWN",
+      "op": "callback",
+      "request_id": "cb-badchallenge",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-24",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-24",
+      "status": "ok"
+    },
+    {
+      "error": "E_SUBJECT_REVOKED",
+      "op": "callback",
+      "request_id": "cb-24",
+      "status": "error"
+    },
+    {
+      "challenge_id": "CH-ch-25",
+      "error": null,
+      "op": "challenge",
+      "request_id": "ch-25",
+      "status": "ok"
+    },
+    {
+      "error": "E_CLAIM_TIME",
+      "op": "callback",
+      "request_id": "cb-25",
+      "status": "error"
+    }
+  ],
+  "summary": {
+    "challenges": {
+      "callback_done": 6,
+      "pending": 5,
+      "redeemed": 8
+    },
+    "claims_consumed": 14,
+    "credentials": {
+      "consumed": 8,
+      "invalidated": 5,
+      "issued": 1
+    },
+    "devices": {
+      "d1": 5,
+      "d2": 3,
+      "d3": 1
+    },
+    "sessions": [
+      "SE-rd-1",
+      "SE-rd-11",
+      "SE-rd-14",
+      "SE-rd-2",
+      "SE-rd-22",
+      "SE-rd-23",
+      "SE-rd-3",
+      "SE-rd-5"
+    ],
+    "sessions_total": 8
+  }
+}
